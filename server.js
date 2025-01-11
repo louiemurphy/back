@@ -10,24 +10,27 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://divinagracia:7mFGBa3FSPTROXeF@cluster0.546ye.mongodb.net/supplierDB?retryWrites=true&w=majority&appName=Cluster0")
+mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://divinagracia:7mFGBa3FSPTROXeF@cluster0.546ye.mongodb.net/supplierDB?retryWrites=true&w=majority&appName=Cluster0", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
   .then(() => console.log('MongoDB connected successfully'))
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Define Supplier Schema
 const supplierSchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now },
-  email: String,
-  category: String,
-  classification: String,
-  companyName: String,
-  address: String,
-  location: String,
-  account: String,
-  contactPerson: String,
-  contactNumber: String,
-  contactEmail: String,
-  website: String,
+  email: { type: String, required: true },
+  category: { type: String, required: true },
+  classification: { type: String, required: true },
+  companyName: { type: String, required: true },
+  address: { type: String, required: true },
+  location: { type: String, required: true },
+  account: { type: String, required: true },
+  contactPerson: { type: String, required: true },
+  contactNumber: { type: String, required: true },
+  contactEmail: { type: String, required: true },
+  website: { type: String, required: true },
 });
 
 const Supplier = mongoose.model("Supplier", supplierSchema);
@@ -59,10 +62,13 @@ app.get("/api/suppliers/:id", async (req, res) => {
 // Add a new supplier
 app.post("/api/suppliers", async (req, res) => {
   try {
+    console.log('Request body:', req.body); // Log the incoming request body
     const newSupplier = new Supplier(req.body);
     await newSupplier.save();
+    console.log('New supplier added:', newSupplier); // Log the inserted data
     res.status(201).json(newSupplier);
   } catch (error) {
+    console.error('Error adding supplier:', error); // Log the error
     res.status(500).json({ message: "Error adding supplier", error });
   }
 });
@@ -100,6 +106,12 @@ app.delete("/api/suppliers/:id", async (req, res) => {
 // Handle invalid routes
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Something went wrong!" });
 });
 
 // Start the server
