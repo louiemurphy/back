@@ -16,7 +16,12 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://divinagracia:7mFGBa3F
 
 // Define Supplier Schema
 const supplierSchema = new mongoose.Schema({
-  timestamp: { type: Date, default: Date.now },
+  timestamp: { 
+    type: Date,
+    default: () => {
+      return new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
+    }
+  },
   email: String,
   category: String,
   classification: String,
@@ -29,6 +34,7 @@ const supplierSchema = new mongoose.Schema({
   contactEmail: String,
   website: String,
 });
+
 
 const Supplier = mongoose.model("Supplier", supplierSchema);
 
@@ -59,13 +65,17 @@ app.get("/api/suppliers/:id", async (req, res) => {
 // Add a new supplier
 app.post("/api/suppliers", async (req, res) => {
   try {
-    console.log('Request body:', req.body); // Log the incoming request body
-    const newSupplier = new Supplier(req.body);
+    const supplierData = {
+      ...req.body,
+      timestamp: new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" })
+    };
+    
+    const newSupplier = new Supplier(supplierData);
     await newSupplier.save();
-    console.log('New supplier added:', newSupplier); // Log the inserted data
+    console.log('New supplier added:', newSupplier);
     res.status(201).json(newSupplier);
   } catch (error) {
-    console.error('Error adding supplier:', error); // Log the error
+    console.error('Error adding supplier:', error);
     res.status(500).json({ message: "Error adding supplier", error });
   }
 });
