@@ -10,27 +10,24 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://divinagracia:7mFGBa3FSPTROXeF@cluster0.546ye.mongodb.net/supplierDB?retryWrites=true&w=majority&appName=Cluster0", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://divinagracia:7mFGBa3FSPTROXeF@cluster0.546ye.mongodb.net/supplierDB?retryWrites=true&w=majority&appName=Cluster0")
   .then(() => console.log('MongoDB connected successfully'))
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Define Supplier Schema
 const supplierSchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now },
-  email: { type: String, required: true },
-  category: { type: String, required: true },
-  classification: { type: String, required: true },
-  companyName: { type: String, required: true },
-  address: { type: String, required: true },
-  location: { type: String, required: true },
-  account: { type: String, required: true },
-  contactPerson: { type: String, required: true },
-  contactNumber: { type: String, required: true },
-  contactEmail: { type: String, required: true },
-  website: { type: String, required: true },
+  email: String,
+  category: String,
+  classification: String,
+  companyName: String,
+  address: String,
+  location: String,
+  account: String,
+  contactPerson: String,
+  contactNumber: String,
+  contactEmail: String,
+  website: String,
 });
 
 const Supplier = mongoose.model("Supplier", supplierSchema);
@@ -106,12 +103,6 @@ app.delete("/api/suppliers/:id", async (req, res) => {
 // Handle invalid routes
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: "Something went wrong!" });
 });
 
 // Start the server
