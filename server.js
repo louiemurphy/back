@@ -6,7 +6,12 @@ require('dotenv').config(); // Load environment variables
 const app = express();
 
 // Middleware
-app.use(cors());
+// Configure CORS to allow requests from your frontend's origin
+app.use(cors({
+  origin: "http://193.203.162.228:3005", // Replace with your frontend's URL
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+}));
 app.use(express.json());
 
 // Connect to MongoDB
@@ -34,7 +39,6 @@ const supplierSchema = new mongoose.Schema({
   contactEmail: String,
   website: String,
 });
-
 
 const Supplier = mongoose.model("Supplier", supplierSchema);
 
@@ -69,7 +73,9 @@ app.post("/api/suppliers", async (req, res) => {
       ...req.body,
       timestamp: new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" })
     };
-    
+
+    console.log("Received Data:", supplierData); // Debugging
+
     const newSupplier = new Supplier(supplierData);
     await newSupplier.save();
     console.log('New supplier added:', newSupplier);
@@ -79,7 +85,6 @@ app.post("/api/suppliers", async (req, res) => {
     res.status(500).json({ message: "Error adding supplier", error });
   }
 });
-
 // Update a supplier by ID
 app.put("/api/suppliers/:id", async (req, res) => {
   try {
@@ -117,6 +122,6 @@ app.use((req, res) => {
 
 // Start the server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server is running on http://0.0.0.0:${PORT}`);
 });
