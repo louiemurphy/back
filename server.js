@@ -8,7 +8,7 @@ const app = express();
 // Middleware
 // Configure CORS to allow requests from your frontend's origin
 app.use(cors({
-  origin: "http://193.203.162.228:3005", // Replace with your frontend's URL
+  origin: "http://193.203.162.228", // Replace with your frontend's URL
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }));
