@@ -8,7 +8,7 @@ const app = express();
 // Middleware
 // Configure CORS to allow requests from your frontend's origin
 app.use(cors({
-  origin: ["*"], // Allow multiple origins
+  origin: ["http://193.203.162.228"], // Allow multiple origins
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }));
